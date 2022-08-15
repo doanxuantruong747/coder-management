@@ -1,0 +1,86 @@
+[{
+  "_id": {
+    "$oid": "62f6e9cff399c479e7557687"
+  },
+  "name": "truong",
+  "roles": "employee",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660348879043"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660348879043"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f6eae52dda51065452f8f9"
+  },
+  "name": "Hao",
+  "roles": "manager",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660349157622"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660349157622"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f6ebb5f991cd198a418d93"
+  },
+  "name": "Thi",
+  "roles": "employee",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660349365289"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660349365289"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f757ccf991cd198a418d96"
+  },
+  "name": "Nami",
+  "roles": "employee",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660377036167"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660377036167"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62fa65a37eb53f7e49008680"
+  },
+  "name": "bum",
+  "roles": "employee",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660577187562"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660577187562"
+    }
+  },
+  "__v": 0
+}]

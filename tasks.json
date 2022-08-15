@@ -1,0 +1,89 @@
+[{
+  "_id": {
+    "$oid": "62fa4cf24b30d3de3b2b73ee"
+  },
+  "name": "rua chen",
+  "description": "rua het chen bat trong nha",
+  "status": "working",
+  "isDeleted": false,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660570866346"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660572867833"
+    }
+  },
+  "__v": 0,
+  "referenceTo": {
+    "$oid": "62f6e9cff399c479e7557687"
+  }
+},{
+  "_id": {
+    "$oid": "62fa4d5e4b30d3de3b2b73f0"
+  },
+  "name": "lau nha",
+  "description": "lau phong khach, phong ngu, nha ve sinh",
+  "status": "archive",
+  "isDeleted": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660570974691"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660573189359"
+    }
+  },
+  "__v": 0,
+  "referenceTo": {
+    "$oid": "62f6e9cff399c479e7557687"
+  }
+},{
+  "_id": {
+    "$oid": "62fa4d9c4b30d3de3b2b73f2"
+  },
+  "name": "giat do",
+  "description": "ao si mi giat tay, ao thun giat may",
+  "status": "pending",
+  "isDeleted": false,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660571036244"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660571398601"
+    }
+  },
+  "__v": 0,
+  "referenceTo": {
+    "$oid": "62f6ebb5f991cd198a418d93"
+  }
+},{
+  "_id": {
+    "$oid": "62fa4e834b30d3de3b2b73f5"
+  },
+  "name": "quet nha",
+  "description": "quet va lau don ban an, ban lam viec, ke, tu",
+  "status": "pending",
+  "isDeleted": false,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1660571267901"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1660571451152"
+    }
+  },
+  "__v": 0,
+  "referenceTo": {
+    "$oid": "62f757ccf991cd198a418d96"
+  }
+}]
