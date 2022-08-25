@@ -1,73 +1,66 @@
-const { sendResponse, AppError } = require("../helpers/utils.js")
+const { sendResponse, AppError, catchAsync } = require("../helpers/utils.js")
 
 const User = require("../models/User.js")
 
 const userController = {}
+
 //Create a User
-userController.createUser = async (req, res, next) => {
+userController.createUser = catchAsync(async (req, res, next) => {
 
-    const { name, roles } = req.body
-    const data = { name, roles }
-    try {
+    // get data from request
+    let { name, roles } = req.body
 
-        //always remember to control your inputs
-        if (!data) throw new AppError(402, "Bad Request", "Create User Error")
-        //mongoose query
-        const created = await User.create(data)
-        sendResponse(res, 200, true, { data: created }, null, "Create User Success")
-    } catch (err) {
-        next(err)
-    }
-}
+    let user = await User.findOne({ name })
 
+    if (!user) throw new AppError(402, "Bad Request", "Create User Error")
 
-//Get all your User
-userController.getAllUser = async (req, res, next) => {
-    try {
-        //mongoose query
-        const listOfFound = await User.find({})
-        sendResponse(res, 200, true, { data: listOfFound }, null, "Found list of User success")
-    } catch (err) {
-        next(err)
-    }
-}
+    //Process
+    user = await User.create({ name, roles })
+
+    // response
+    sendResponse(res, 200, true, { data: created }, null, "Create User Success")
+
+});
 
 
-//Get all your employee
-userController.getAllUserEmployee = async (req, res, next) => {
+//Get users with pagination, Get list employee,Get list manager,Search for employee by name
+userController.getAllUser = catchAsync(async (req, res, next) => {
 
-    const filter = { roles: "employee" }
-    try {
-        //mongoose query
-        const listOfFound = await User.find(filter)
-        sendResponse(res, 200, true, { data: listOfFound }, null, "Found list of User success")
-    } catch (err) {
-        next(err)
-    }
-}
+    let { page, limit, ...filter } = { ...req.query }
 
+    let filterConditions = [{}]
 
-//Search for an employee by name
-userController.getNameUserEmployee = async (req, res, next) => {
-
-    let { targetName } = req.params
-
-    try {
-        //mongoose query
-        let data = await (await User.find({ roles: "employee" })).filter((user) => {
-            if (user.name.toLowerCase() === targetName.toLowerCase())
-                // if (user.name.toLowerCase().includes(targetName.toLowerCase()))
-                return user
+    if (filter.name) {
+        filterConditions.push({
+            name: { $regex: filter.name, $options: "i" },
         })
-
-        if (!data) { throw new AppError(403, "data null") }
-
-        sendResponse(res, 200, true, { data: data }, null, "Search User success")
-    } catch (err) {
-        next(err)
     }
-}
 
+    if (filter.roles) {
+        filterConditions.push({
+            roles: { $regex: filter.roles, $options: "i" },
+        })
+    }
+
+    const filterCritera = filterConditions.length
+        ? { $and: filterConditions }
+        : {};
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const count = await User.countDocuments(filterCritera)
+    const totalPages = Math.ceil(count / limit);
+    const offset = limit * (page - 1)
+
+    let users = await User.find(filterCritera)
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit)
+
+
+    sendResponse(res, 200, true, { users, totalPages, count }, null, "Found list of User success")
+
+})
 
 
 //export

@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { createUser, getAllUserEmployee, getNameUserEmployee, getAllUser } =
+const { createUser, getAllUser } =
     require("../controllers/user.controllers.js")
 
 //Read
@@ -13,30 +13,12 @@ const { createUser, getAllUserEmployee, getNameUserEmployee, getAllUser } =
 router.post("/", createUser)
 
 
-/**Get all your Users
+/**GET /users?page=1&limit=10&name=`$userName`&roles=employee||manager
  * @route GET api/users
- * @description get list of Users
+ * @description Get users with pagination, Get list employee,Get list manager,Search for employee by name
  * @access public
  */
 router.get("/", getAllUser)
-
-
-/**Get all your employee
- * @route GET api/users/employee
- * @description get list employee of Users
- * @access public
- */
-router.get("/employee", getAllUserEmployee)
-
-
-/** Search for an employee by name
- * @route GET api/users/:targetName
- * @description Search for an employee by name
- * @access public
- */
-router.get("/search/:targetName", getNameUserEmployee)
-
-
 
 
 //export
