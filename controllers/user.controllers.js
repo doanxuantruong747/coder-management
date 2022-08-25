@@ -10,15 +10,11 @@ userController.createUser = catchAsync(async (req, res, next) => {
     // get data from request
     let { name, roles } = req.body
 
-    let user = await User.findOne({ name })
-
-    if (!user) throw new AppError(402, "Bad Request", "Create User Error")
-
     //Process
-    user = await User.create({ name, roles })
+    let user = await User.create({ name, roles })
 
     // response
-    sendResponse(res, 200, true, { data: created }, null, "Create User Success")
+    sendResponse(res, 200, true, user, null, "Create User Success")
 
 });
 
