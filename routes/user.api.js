@@ -3,6 +3,7 @@ const router = express.Router()
 const { createUser, getAllUser } =
     require("../controllers/user.controllers.js")
 
+
 //Read
 
 /** Create a User

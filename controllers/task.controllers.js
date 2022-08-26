@@ -11,8 +11,11 @@ taskController.createTask = catchAsync(async (req, res, next) => {
     // get data from request
     let { taskName, description } = req.body
 
+    let task = await Tasks.findOne({ taskName })
+    if (task) throw new AppError(400, "Task already exists", "Create Task Error")
+
     //Process
-    let task = await Tasks.create({ taskName, description, status: "pending", })
+    task = await Tasks.create({ taskName, description, status: "pending", })
 
     // response
     sendResponse(res, 200, true, task, null, "Create Task Success")
@@ -20,34 +23,34 @@ taskController.createTask = catchAsync(async (req, res, next) => {
 });
 
 
-//Get all Task & Search tasks of 1 member either by user name of referenceTo
+//Get all Task & Search tasks of 1 member either by user name of assignee 
 taskController.getAllTask = catchAsync(async (req, res, next) => {
-    let { page, limit, ...filter } = { ...req.query }
-    const userName = req.query.userName
-    let filterConditions = [{ isDeleted: false }]
-
-    if (filter.taskName) {
-        filterConditions.push({
-            taskName: { $regex: filter.taskName, $options: "i" },
-        })
-    }
-
-    const filterCritera = filterConditions.length
-        ? { $and: filterConditions }
-        : {};
+    let { page, limit, userName, taskName, ...filter } = req.query
 
 
-    let tasks = await Tasks.find(filterCritera && { isDeleted: false })
-        .populate("referenceTo")
+    const filterKeys = Object.keys(filter);
+    if (filterKeys.length)
+        throw new AppError(400, "Not accepted query", "Bad Request");
+
+
+    let tasks = await Tasks.find({ isDeleted: false })
+        .populate("assignee")
         .sort({ createdAt: -1 })
 
     if (userName)
         tasks = tasks.filter((task) => {
-            if (task.referenceTo) {
-                if (userName.toLowerCase() === task.referenceTo.name.toLowerCase())
-                    return task
+            if (task.assignee) {
+                return (task.assignee.name.toLowerCase().includes(userName.toLowerCase()))
             }
         })
+
+    if (taskName)
+        tasks = tasks.filter((task) => {
+            if (task.taskName) {
+                return (task.taskName.toLowerCase().includes(taskName.toLowerCase()))
+            }
+        })
+
 
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
@@ -63,7 +66,7 @@ taskController.getAllTask = catchAsync(async (req, res, next) => {
 taskController.getDetailTaskById = catchAsync(async (req, res, next) => {
     const taskId = req.params.id;
 
-    let task = await Tasks.findById(taskId).populate("referenceTo")
+    let task = await Tasks.findOne({ taskId }).populate("assignee")
 
     if (!task) throw new AppError(400, "Task not found", "Get Single Task Error")
 
@@ -73,16 +76,21 @@ taskController.getDetailTaskById = catchAsync(async (req, res, next) => {
 
 
 //update add task by name for user
-taskController.addReference = catchAsync(async (req, res, next) => {
+taskController.addAssignee = catchAsync(async (req, res, next) => {
 
-    const { taskName } = req.params
-    const { ref } = req.body
+    const { taskName } = req.params;
+    let { ref } = req.body;
 
-    let task = await Tasks.findOne({ taskName })
-    task.referenceTo = ref;
+    let task = await Tasks.findOne({ taskName }).populate("assignee");
+    if (!task) throw new AppError(400, "Task already exists", "add Assignee Task Error")
 
-    await task.save()
-    sendResponse(res, 200, true, task, null, "Add reference success")
+    if (ref) {
+        task.assignee = ref;
+        await task.save()
+    }
+    else { throw new AppError(400, `Use 'ref' to update Assignee`, "add Assignee Task Error") }
+
+    sendResponse(res, 200, true, task, null, "Add Assignee success")
 
 });
 
@@ -93,8 +101,9 @@ taskController.updateStatusTask = catchAsync(async (req, res, next) => {
     const { id } = req.params
     let { status, isDeleted = true } = req.body
 
-    let tasks = await Tasks.findOne({ _id: id })
-    console.log('tasks:', tasks)
+    let tasks = await Tasks.findOne({ _id: id }).populate("assignee")
+    if (!tasks) throw new AppError(400, "Task already exists", "Update Task Error")
+
     tasks.status = status;
 
     //logic  by changing isDeleted to true
@@ -102,7 +111,7 @@ taskController.updateStatusTask = catchAsync(async (req, res, next) => {
 
     //mongoose query
     tasks = await tasks.save()
-    sendResponse(res, 200, true, tasks, null, "Add reference success")
+    sendResponse(res, 200, true, tasks, null, "Update Status success")
 
 })
 

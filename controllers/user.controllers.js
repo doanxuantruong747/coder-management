@@ -10,8 +10,12 @@ userController.createUser = catchAsync(async (req, res, next) => {
     // get data from request
     let { name, roles } = req.body
 
+    let user = await User.findOne({ name })
+    if (user)
+        throw new AppError(400, "User already exists", "create error")
+
     //Process
-    let user = await User.create({ name, roles })
+    user = await User.create({ name, roles })
 
     // response
     sendResponse(res, 200, true, user, null, "Create User Success")
@@ -22,19 +26,23 @@ userController.createUser = catchAsync(async (req, res, next) => {
 //Get users with pagination, Get list employee,Get list manager,Search for employee by name
 userController.getAllUser = catchAsync(async (req, res, next) => {
 
-    let { page, limit, ...filter } = { ...req.query }
+    let { page, limit, name, roles, ...filter } = req.query
 
-    let filterConditions = [{}]
+    let filterConditions = []
 
-    if (filter.name) {
+    const filterKeys = Object.keys(filter);
+    if (filterKeys.length)
+        throw new AppError(400, "Not accepted query", "Bad Request");
+
+    if (name) {
         filterConditions.push({
-            name: { $regex: filter.name, $options: "i" },
+            name: { $regex: name, $options: "i" },
         })
     }
 
-    if (filter.roles) {
+    if (roles) {
         filterConditions.push({
-            roles: { $regex: filter.roles, $options: "i" },
+            roles: { $regex: roles, $options: "i" },
         })
     }
 

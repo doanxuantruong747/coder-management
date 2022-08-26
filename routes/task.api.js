@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { createTask, getAllTask, getDetailTaskById, addReference, updateStatusTask } =
+const { createTask, getAllTask, getDetailTaskById, addAssignee, updateStatusTask } =
     require("../controllers/task.controllers.js")
 
 //Read
@@ -37,7 +37,7 @@ router.get("/:id", getDetailTaskById)
  * @body {ref}
  * @access public 
  */
-router.put("/:taskName", addReference)
+router.put("/:taskName", addAssignee)
 
 
 /** update status 
